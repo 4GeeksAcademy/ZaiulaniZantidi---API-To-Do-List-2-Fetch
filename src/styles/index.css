@@ -1,11 +1,201 @@
-/* 
 
-    You can write your own styles here...
-    
-    
-    ...Or you can use the import command to include 
-    other sylesheets into your bunde as well, e.j:
-    
-    import 'relative/path/to/stylesheet.scss';
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap');
 
-*/
+body {
+    font-family: "Copperplate", fantasy; 
+    margin: 0;
+    background-color: #3c3c3c; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 30px; 
+    box-sizing: border-box;
+}
+
+.todo-app-container {
+    background-color: #3c3c3c; 
+    border-radius: 0px;
+    padding: 50px;
+    text-align: center;
+    max-width: 650px; 
+    width: 100%;
+}
+
+h1 {
+    color: #1ee9e9; 
+    font-weight: 400;
+    margin-bottom: 40px; 
+    font-size: 3.5rem; 
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); 
+}
+
+.input-section {
+    display: flex;
+    gap: 15px; 
+    margin-bottom: 40px; 
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap; 
+}
+
+.input-section input {
+    flex-grow: 1;
+    padding: 15px;
+    border: 2px solid #44ffff; 
+    border-radius: 12px; 
+    font-size: 1.2rem; 
+    min-width: 220px; 
+    color: #232323; 
+    font-family: "Copperplate", fantasy;
+}
+.input-section input::placeholder {
+    color: #1ad5d5; 
+    opacity: 0.7;
+}
+
+.add-button {
+    padding: 15px 25px; 
+    background-color: #1ee9e9; 
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700; 
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    font-size: 1.1rem;
+    text-transform: uppercase; 
+}
+.add-button:hover {
+    background-color: #1ad5d5; 
+    transform: translateY(-3px); 
+    box-shadow: 0 6px 15px rgba(52, 235, 242, 0.4); 
+}
+.add-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.todo-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 40px 0;
+    text-align: left;
+    border: 2px solid #57e7e7; 
+    border-radius: 15px;
+    max-height: 400px; 
+    overflow-y: auto; 
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05); 
+}
+
+.todo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px; 
+    border-bottom: 1px solid #44ffff; 
+    font-size: 1.4rem; 
+    color: #232323;
+    background-color: #ffffff; 
+    font-weight: 400; 
+}
+.todo-item:last-child {
+    border-bottom: none;
+}
+.todo-item:nth-child(even) {
+    background-color: #44ffff; 
+}
+
+.todo-item-text {
+    flex-grow: 1;
+    margin-right: 20px;
+    word-break: break-word;
+}
+
+.delete-button {
+    background-color: #57e7e7;
+    color: white;
+    border: none;
+    border-radius: 8px; 
+    padding: 10px 15px;
+    font-size: 1rem; 
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease, opacity 0.3s ease;
+    font-weight: 400; 
+    opacity: 0; 
+    pointer-events: none; 
+}
+.todo-item:hover .delete-button { 
+    opacity: 1;
+    pointer-events: auto; 
+}
+.delete-button:hover {
+    background-color: #44b4b4;
+    transform: translateY(-1px);
+}
+.delete-button:active {
+    transform: translateY(0);
+}
+
+.reset-button:hover {
+    background-color: #44ffff; 
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(60, 230, 230, 0.4);
+}
+.reset-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+.reset-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+@media (max-width: 480px) {
+    .todo-app-container {
+        padding: 25px 15px;
+        border-radius: 15px;
+    }
+    h1 {
+        font-size: 2.5rem;
+        margin-bottom: 25px;
+    }
+    .input-section {
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 25px;
+    }
+    .input-section input,
+    .add-button {
+        width: 100%;
+        padding: 12px;
+        font-size: 1rem;
+    }
+    .todo-list {
+        max-height: 350px;
+        margin-bottom: 25px;
+    }
+    .todo-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 12px;
+        font-size: 1.2rem;
+    }
+    .todo-item-text {
+        margin-right: 0;
+        margin-bottom: 0;
+    }
+    .delete-button {
+        width: 100%;
+        padding: 8px;
+        font-size: 0.85rem;
+    }
+    .reset-button {
+        padding: 12px 20px;
+        font-size: 1rem;
+    }
+}
+

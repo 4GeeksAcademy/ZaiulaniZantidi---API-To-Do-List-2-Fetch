@@ -1,28 +1,115 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom/client';
 
-//include images into your bundle
-import rigoImage from "../../img/rigo-baby.jpg";
 
-//create your first component
-const Home = () => {
-	return (
-		<div className="text-center">
-            
+const TodoListApp = () => {
+  
+  const [todos, setTodos] = useState([]);
+  
+  const [inputValue, setInputValue] = useState('');
 
-			<h1 className="text-center mt-5">Hello Rigo!</h1>
-			<p>
-				<img src={rigoImage} />
-			</p>
-			<a href="#" className="btn btn-success">
-				If you see this green button... bootstrap is working...
-			</a>
-			<p>
-				Made by{" "}
-				<a href="http://www.4geeksacademy.com">4Geeks Academy</a>, with
-				love!
-			</p>
-		</div>
-	);
+  fetch('https://playground.4geeks.com/todo/todos/alesanchezr', {
+        method: "POST",
+        body: JSON.stringify(todos),
+        headers: {
+          "Content-Type": "application/json"
+        }
+     })
+     .then(resp => {
+          console.log(resp.ok); 
+          console.log(resp.status);
+          return resp.json(); 
+     })
+     .then(data => {
+
+          console.log(data); 
+     })
+     .catch(error => {
+          console.log(error);
+     });
+
+  
+  const handleAddTodo = () => {
+
+    if (inputValue.trim() === '') {
+
+      console.log("Input cannot be empty!");
+      return;
+    }
+
+    const newTodo = {
+      id: Date.now(), 
+      text: inputValue.trim(), 
+    };
+
+   
+    setTodos([...todos, newTodo]);
+
+    setInputValue('');
+  };
+
+  const handleDeleteTodo = (idToDelete) => {
+
+    const updatedTodos = todos.filter(todo => todo.id !== idToDelete);
+    setTodos(updatedTodos);
+  };
+
+  const handleResetList = () => {
+    setTodos([]);
+  };
+
+
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
+  };
+
+  return (
+    <div className="todo-app-container">
+
+      <h1>My To-Do List</h1>
+
+      <div className="input-section">
+        <input
+          type="text"
+          value={inputValue}
+          onChange={handleInputChange}
+          placeholder="Add a new to-do item..."
+          onKeyPress={(e) => { 
+            if (e.key === 'Enter') {
+              handleAddTodo();
+            }
+          }}
+        />
+        <button className="add-button" onClick={handleAddTodo}>
+          Add To-Do
+        </button>
+      </div>
+
+      {todos.length === 0 ? (
+        <p className="text-muted" style={{ fontSize: '1.2rem', color: '#1ee9e9', fontStyle: 'italic' }}>
+          No to-do items yet. Add some!
+        </p>
+      ) : (
+        <ul className="todo-list">
+          {todos.map(todo => (
+            <li key={todo.id} className="todo-item">
+              <span className="todo-item-text">{todo.text}</span>
+              <button className="delete-button" onClick={() => handleDeleteTodo(todo.id)}>
+                Delete
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <button className="reset-button" onClick={handleResetList} disabled={todos.length === 0}>
+        Reset List
+      </button>
+    </div>
+  );
 };
 
-export default Home;
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<TodoListApp />);
+
+export default TodoListApp;
