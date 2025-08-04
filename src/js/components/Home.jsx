@@ -8,8 +8,40 @@ const TodoListApp = () => {
   
   const [inputValue, setInputValue] = useState('');
 
-  fetch('https://playground.4geeks.com/todo/todos/alesanchezr', {
+   useEffect(() => {
+
+     fetch ('https://playground.4geeks.com/todo/todos/Zaiulani.Zantidi')
+     .then((res) => res.json())
+     .then((data) => {
+       console.log(data);
+     });
+
+   }, []);
+  
+
+  fetch ('https://playground.4geeks.com/todo/todos/Zaiulani.Zantidi', {
         method: "POST",
+        body: JSON.stringify(todos),
+        headers: {
+          "Content-Type": "application/json"
+        }
+     })
+     .then(resp => {
+          console.log(resp.ok); 
+          console.log(resp.status);
+          return resp.json(); 
+     })
+     .then(data => {
+
+          console.log(data); 
+     })
+     .catch(error => {
+          console.log(error);
+     });
+
+  
+  fetch ('https://playground.4geeks.com/todo/todos/Zaiulani.Zantidi', {
+        method: "DELETE",
         body: JSON.stringify(todos),
         headers: {
           "Content-Type": "application/json"
