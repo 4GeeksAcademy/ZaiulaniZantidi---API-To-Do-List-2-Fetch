@@ -1,95 +1,88 @@
 import React, { useState, useEffect } from 'react';
-import ReactDOM from 'react-dom/client';
-
 
 const TodoListApp = () => {
-  
   const [todos, setTodos] = useState([]);
-  
   const [inputValue, setInputValue] = useState('');
+  const username = 'zaiulanizantidi';
 
-   useEffect(() => {
+  useEffect(() => {
+    // First create user (if not exists), then fetch todos
+    const initUserAndFetchTodos = async () => {
+      try {
+        await fetch(`https://playground.4geeks.com/todo/users/${username}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
 
-     fetch ('https://playground.4geeks.com/todo/todos/Zaiulani.Zantidi')
-     .then((res) => res.json())
-     .then((data) => {
-       console.log(data);
-     });
+        const res = await fetch(`https://playground.4geeks.com/todo/todos/${username}`);
+        if (!res.ok) throw new Error("Failed to fetch todos");
+        const data = await res.json();
 
-   }, []);
-  
+        // Save fetched todos to state
+        setTodos(data.todos || []);
+      } catch (err) {
+        console.error("Initialization error:", err);
+      }
+    };
 
-  fetch ('https://playground.4geeks.com/todo/todos/Zaiulani.Zantidi', {
-        method: "POST",
-        body: JSON.stringify(todos),
-        headers: {
-          "Content-Type": "application/json"
-        }
-     })
-     .then(resp => {
-          console.log(resp.ok); 
-          console.log(resp.status);
-          return resp.json(); 
-     })
-     .then(data => {
+    initUserAndFetchTodos();
+  }, []);
 
-          console.log(data); 
-     })
-     .catch(error => {
-          console.log(error);
-     });
-
-  
-  fetch ('https://playground.4geeks.com/todo/todos/Zaiulani.Zantidi', {
-        method: "DELETE",
-        body: JSON.stringify(todos),
-        headers: {
-          "Content-Type": "application/json"
-        }
-     })
-     .then(resp => {
-          console.log(resp.ok); 
-          console.log(resp.status);
-          return resp.json(); 
-     })
-     .then(data => {
-
-          console.log(data); 
-     })
-     .catch(error => {
-          console.log(error);
-     });
-
-  
-  const handleAddTodo = () => {
-
+  const handleAddTodo = async () => {
     if (inputValue.trim() === '') {
-
       console.log("Input cannot be empty!");
       return;
     }
 
     const newTodo = {
-      id: Date.now(), 
-      text: inputValue.trim(), 
+      label: inputValue.trim(),
+      done: false,
     };
 
-   
-    setTodos([...todos, newTodo]);
+    try {
+      const res = await fetch(`https://playground.4geeks.com/todo/todos/${username}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newTodo),
+      });
 
-    setInputValue('');
+      if (!res.ok) throw new Error("Failed to add todo");
+
+      const createdTodo = await res.json();
+      setTodos([...todos, createdTodo]);
+      setInputValue('');
+    } catch (err) {
+      console.error("Add error:", err);
+    }
   };
 
-  const handleDeleteTodo = (idToDelete) => {
+  const handleDeleteTodo = async (idToDelete) => {
+    try {
+      const res = await fetch(`https://playground.4geeks.com/todo/todos/${idToDelete}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-    const updatedTodos = todos.filter(todo => todo.id !== idToDelete);
-    setTodos(updatedTodos);
+      if (!res.ok) throw new Error("Failed to delete todo");
+
+      setTodos(todos.filter(todo => todo.id !== idToDelete));
+    } catch (err) {
+      console.error("Delete error:", err);
+    }
   };
 
-  const handleResetList = () => {
-    setTodos([]);
+  const handleResetList = async () => {
+    // Optional: delete all items individually
+    for (const todo of todos) {
+      await handleDeleteTodo(todo.id);
+    }
   };
-
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
@@ -97,7 +90,6 @@ const TodoListApp = () => {
 
   return (
     <div className="todo-app-container">
-
       <h1>My To-Do List</h1>
 
       <div className="input-section">
@@ -106,7 +98,7 @@ const TodoListApp = () => {
           value={inputValue}
           onChange={handleInputChange}
           placeholder="Add a new to-do item..."
-          onKeyPress={(e) => { 
+          onKeyPress={(e) => {
             if (e.key === 'Enter') {
               handleAddTodo();
             }
@@ -125,7 +117,7 @@ const TodoListApp = () => {
         <ul className="todo-list">
           {todos.map(todo => (
             <li key={todo.id} className="todo-item">
-              <span className="todo-item-text">{todo.text}</span>
+              <span className="todo-item-text">{todo.label}</span>
               <button className="delete-button" onClick={() => handleDeleteTodo(todo.id)}>
                 Delete
               </button>
@@ -140,8 +132,5 @@ const TodoListApp = () => {
     </div>
   );
 };
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<TodoListApp />);
 
 export default TodoListApp;
